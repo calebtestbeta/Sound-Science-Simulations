@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound-Science-Simulations: 麥克風指向性模擬</title>
+    <link rel="stylesheet" href="mic.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="icon" type="image/png" href="favicon.png"> 
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 麥克風指向性模擬 (Microphone Directivity)</h1>
+        <p>此模擬展示不同麥克風類型如何接收來自不同角度的聲音，這是助聽器降噪的關鍵原理。</p>
+
+        <div class="controls-grid">
+            
+            <div class="mic-selection-panel">
+                <h2>麥克風類型選擇</h2>
+                <select id="micTypeSelect">
+                    <option value="Omnidirectional">1. 全向性 (Omni)</option>
+                    <option value="Cardioid" selected>2. 心型 (Cardioid)</option>
+                    <option value="Supercardioid">3. 超心型 (Supercardioid)</option>
+                    <option value="Shotgun">4. 槍型 (Shotgun)</option>
+                </select>
+                
+                <div id="micShapeContainer">
+                    <svg id="micShapeSVG" width="100" height="220" viewBox="0 0 100 220"></svg>
+                    <p id="micTypeDescription" class="description-text"></p>
+                </div>
+            </div>
+
+            <div class="parameter-adjustment">
+                <h2>參數調整</h2>
+
+                <div class="control-group">
+                    <label for="freqSlider">聲音頻率 (Hz): <span id="currentFreq">1000</span> Hz</label>
+                    <input type="range" id="freqSlider" min="250" max="8000" value="1000" step="50">
+                    <p class="hint">高頻通常指向性更強 (圖形更尖銳)。</p>
+                </div>
+                
+                <div class="control-group">
+                    <label for="noiseAngleInput">背景噪音角度 (0° 正前方): <span id="currentNoiseAngle">180</span>°</label>
+                    <input type="range" id="noiseAngleInput" min="0" max="359" value="180" step="1">
+                    <p class="hint">紅點代表噪音源位置，曲線在紅點處越接近圓心，抑制效果越好。</p>
+                </div>
+                
+                <div class="control-group snr-display">
+                    <label>目標語音增強 (SNR 改善):</label>
+                    <div id="snrImprovementValue" class="snr-value">+0.0 dB</div>
+                    <p class="hint">此數值為麥克風在 $0^\circ$ 目標語音處相對於噪音源角度的相對增益差。</p>
+                </div>
+                </div>
+
+        </div>
+
+        <div class="chart-container">
+            <canvas id="polarChart"></canvas>
+        </div>
+
+        <div class="explanation">
+            <h3>圖表說明：極座標圖 (Polar Plot)</h3>
+            <ul>
+                <li><strong>角度 (θ):</strong> 圓周代表聲音的入射方向， $0^\circ$ 為麥克風**正前方**。</li>
+                <li><strong>距離 (dB):</strong> 從圓心到曲線的距離，代表麥克風在該角度的相對**收音增益**（通常是相對於 $0^\circ$ 的衰減量）。</li>
+                <li><strong>觀察重點:</strong> 曲線離圓心**越近**，代表該角度聲音被**抑制**得越多。</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="mic.js"></script>
+</body>
+</html>

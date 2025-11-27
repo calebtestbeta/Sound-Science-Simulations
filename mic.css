@@ -1,0 +1,173 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2.2em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+/* 控制區塊佈局 */
+.controls-grid {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    gap: 30px;
+}
+
+.mic-selection-panel, .parameter-adjustment {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+}
+
+.mic-selection-panel {
+    flex: 0 0 35%; /* 讓 SVG 區塊窄一點 */
+}
+
+.parameter-adjustment {
+    flex: 0 0 60%;
+}
+
+.mic-selection-panel h2, .parameter-adjustment h2 {
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#micTypeSelect {
+    width: 80%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1.1em;
+}
+
+/* 參數滑塊樣式 */
+.control-group {
+    margin-bottom: 25px;
+    padding: 10px;
+    border: 1px dashed #bdc3c7;
+    border-radius: 5px;
+}
+
+.control-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+input[type="range"] {
+    width: 90%;
+}
+
+.hint {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+/* SVG 麥克風外型樣式 */
+#micShapeContainer {
+    margin: 20px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+#micShapeSVG {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.description-text {
+    font-style: italic;
+    color: #c0392b;
+    font-size: 0.9em;
+}
+
+/* 圖表區 */
+.chart-container {
+    margin-top: 20px;
+    background-color: #fdfdfd;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+    height: 500px; 
+    position: relative;
+}
+
+/* 說明區 */
+.explanation {
+    margin-top: 40px;
+    text-align: left;
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 5px solid #3498db;
+}
+
+.explanation h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.explanation ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+.explanation li {
+    margin-bottom: 8px;
+}
+
+/* 噪音點標記 (在 Chart.js 標記點樣式) */
+.noise-indicator {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* 確保不影響圖表互動 */
+}
+
+/* 新增 SNR 顯示樣式 */
+.snr-display {
+    text-align: center;
+    background-color: #e8f8f5; /* 淺綠色背景 */
+    border: 2px solid #16a085; /* 深綠色邊框 */
+}
+
+.snr-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #16a085; /* 突出顯示的顏色 */
+    margin: 5px 0 10px;
+}
