@@ -3,91 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sound-Science-Simulations: 等響度與助聽器模擬</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
-    
-    <link rel="icon" type="image/png" href="favicon.png"> 
+    <title>聲學與音頻科學模擬入口</title>
+    <style>
+        /* 基礎樣式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        /* 模組網格佈局 */
+        .module-grid {
+            display: grid;
+            /* 調整為四個模擬並排 */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 25px;
+        }
+
+        .module-card {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+            transition: all 0.3s ease;
+            border: 1px solid #bdc3c7;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.2);
+            border-color: #3498db;
+        }
+
+        .module-card h2 {
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .module-card p {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+            /* 限制高度以保持卡片一致性 */
+            min-height: 4em; 
+        }
+
+        .module-card a {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .module-card a:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>人耳等響度曲線與聽力學模擬</h1>
-        <p>此工具展示聲音的客觀強度 (dB SPL) 與人耳主觀響度 (Phon) 的關係，並模擬聽力損失補償。</p>
+        <h1>🎵 聲學與音頻科學模擬工作站</h1>
+        <p class="subtitle">請選擇您要探索的模擬主題。</p>
 
-        <div class="controls">
-            <label for="loudnessSlider">目標響度 (Phon): <span id="currentPhon">60</span></label>
-            <input type="range" id="loudnessSlider" min="20" max="90" value="60" step="5">
-        </div>
-        
-        <div class="hearing-controls">
-            <h2>模擬聽力損失與補償</h2>
+        <div class="module-grid">
             
-            <div class="aid-controls">
-                <label for="aidToggle">模擬助聽器補償 (增益 50%法則):</label>
-                <input type="checkbox" id="aidToggle">
+            <div class="module-card">
+                <h2>🎙️ 延遲補償</h2>
+                <p>模擬大型場地中，主喇叭與延遲喇叭的同步延遲時間計算，並觀察指向性對音量差異的影響。</p>
+                <a href="delay_sim.html">進入模擬</a>
             </div>
 
-            <p>請設定您在不同頻率的聽力閾值 (Hearing Threshold) dB HL：</p>
-            <div class="frequency-inputs">
-                <div class="input-group">
-                    <label for="hl500">500 Hz: <span id="hl500Val">20</span> dB HL</label>
-                    <input type="range" class="hlSlider" id="hl500" data-freq="500" min="0" max="100" value="20" step="5">
-                </div>
-                <div class="input-group">
-                    <label for="hl1000">1000 Hz: <span id="hl1000Val">20</span> dB HL</label>
-                    <input type="range" class="hlSlider" id="hl1000" data-freq="1000" min="0" max="100" value="20" step="5">
-                </div>
-                <div class="input-group">
-                    <label for="hl2000">2000 Hz: <span id="hl2000Val">20</span> dB HL</label>
-                    <input type="range" class="hlSlider" id="hl2000" data-freq="2000" min="0" max="100" value="20" step="5">
-                </div>
-                <div class="input-group">
-                    <label for="hl4000">4000 Hz: <span id="hl4000Val">20</span> dB HL</label>
-                    <input type="range" class="hlSlider" id="hl4000" data-freq="4000" min="0" max="100" value="20" step="5">
-                </div>
+            <div class="module-card">
+                <h2>🎤 麥克風指向性</h2>
+                <p>探索心型、超心型等麥克風類型在不同頻率下的收音敏感度，以及對目標語音增強 (SNR) 的改善效果。</p>
+                <a href="mic.html">進入模擬</a>
             </div>
             
-            <div class="gain-adjustments">
-                <h3>微調助聽器增益 (dB)</h3>
-                <div class="frequency-inputs">
-                    <div class="input-group">
-                        <label for="gain500">500 Hz: <span id="gain500Val">10.0</span> dB</label>
-                        <input type="range" class="gainSlider" id="gain500" data-freq="500" min="0" max="60" value="10" step="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label for="gain1000">1000 Hz: <span id="gain1000Val">10.0</span> dB</label>
-                        <input type="range" class="gainSlider" id="gain1000" data-freq="1000" min="0" max="60" value="10" step="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label for="gain2000">2000 Hz: <span id="gain2000Val">10.0</span> dB</label>
-                        <input type="range" class="gainSlider" id="gain2000" data-freq="2000" min="0" max="60" value="10" step="0.5">
-                    </div>
-                    <div class="input-group">
-                        <label for="gain4000">4000 Hz: <span id="gain4000Val">10.0</span> dB</label>
-                        <input type="range" class="gainSlider" id="gain4000" data-freq="4000" min="0" max="60" value="10" step="0.5">
-                    </div>
-                </div>
+            <div class="module-card">
+                <h2>👂 聽力學與響度</h2>
+                <p>展示人耳等響度曲線（Fletcher-Munson），理解不同頻率在人耳感知上的響度差異。</p>
+                <a href="loudness_simulation.html">進入模擬</a>
             </div>
-        </div>
+            
+            <div class="module-card">
+                <h2>🏠 室內殘響 (RT60)</h2>
+                <p>透過光線追蹤模型，模擬房間大小和牆面材質對殘響時間 (RT60) 的影響。</p>
+                <a href="reverb.html">進入模擬</a>
+            </div>
 
-        <div class="chart-container">
-            <canvas id="equalLoudnessChart"></canvas>
-        </div>
-
-        <div class="explanation">
-            <h3>圖表說明：</h3>
-            <ul>
-                <li><strong>藍線 (正常響度):</strong> 代表正常聽力者達到目標 Phon 所需的 SPL。</li>
-                <li><strong>紅虛線 (聽損閾值):</strong> 根據輸入的 dB HL 計算出的聽損者能剛好聽見的最小 SPL (0 Phon)。</li>
-                <li><strong>綠線 (增益量):</strong> 顯示助聽器在各頻率上提供的 dB 放大增益量（請參考右側 Y 軸）。</li>
-                <li><strong>黃虛線 (補償後響度):</strong> 顯示經過助聽器增益補償後，聽損者達到目標 Phon 所需的 SPL。</li>
-                <li><strong>觀察重點:</strong> 助聽器成功時，黃虛線會<strong>接近或重疊</strong>藍線，代表響度還原成功。</li>
-            </ul>
         </div>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>

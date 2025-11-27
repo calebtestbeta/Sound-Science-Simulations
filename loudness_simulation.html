@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound-Science-Simulations: 等響度與助聽器模擬</title>
+    <link rel="stylesheet" href="loudness_simulation.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+    
+    <link rel="icon" type="image/png" href="favicon.png"> 
+</head>
+<body>
+    <div class="container">
+        <h1>人耳等響度曲線與聽力學模擬</h1>
+        <p>此工具展示聲音的客觀強度 (dB SPL) 與人耳主觀響度 (Phon) 的關係，並模擬聽力損失補償。</p>
+
+        <div class="controls">
+            <label for="loudnessSlider">目標響度 (Phon): <span id="currentPhon">60</span></label>
+            <input type="range" id="loudnessSlider" min="20" max="90" value="60" step="5">
+        </div>
+        
+        <div class="hearing-controls">
+            <h2>模擬聽力損失與補償</h2>
+            
+            <div class="aid-controls">
+                <label for="aidToggle">模擬助聽器補償 (增益 50%法則):</label>
+                <input type="checkbox" id="aidToggle">
+            </div>
+
+            <p>請設定您在不同頻率的聽力閾值 (Hearing Threshold) dB HL：</p>
+            <div class="frequency-inputs">
+                <div class="input-group">
+                    <label for="hl500">500 Hz: <span id="hl500Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl500" data-freq="500" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl1000">1000 Hz: <span id="hl1000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl1000" data-freq="1000" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl2000">2000 Hz: <span id="hl2000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl2000" data-freq="2000" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl4000">4000 Hz: <span id="hl4000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl4000" data-freq="4000" min="0" max="100" value="20" step="5">
+                </div>
+            </div>
+            
+            <div class="gain-adjustments">
+                <h3>微調助聽器增益 (dB)</h3>
+                <div class="frequency-inputs">
+                    <div class="input-group">
+                        <label for="gain500">500 Hz: <span id="gain500Val">10.0</span> dB</label>
+                        <input type="range" class="gainSlider" id="gain500" data-freq="500" min="0" max="60" value="10" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="gain1000">1000 Hz: <span id="gain1000Val">10.0</span> dB</label>
+                        <input type="range" class="gainSlider" id="gain1000" data-freq="1000" min="0" max="60" value="10" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="gain2000">2000 Hz: <span id="gain2000Val">10.0</span> dB</label>
+                        <input type="range" class="gainSlider" id="gain2000" data-freq="2000" min="0" max="60" value="10" step="0.5">
+                    </div>
+                    <div class="input-group">
+                        <label for="gain4000">4000 Hz: <span id="gain4000Val">10.0</span> dB</label>
+                        <input type="range" class="gainSlider" id="gain4000" data-freq="4000" min="0" max="60" value="10" step="0.5">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="equalLoudnessChart"></canvas>
+        </div>
+
+        <div class="explanation">
+            <h3>圖表說明：</h3>
+            <ul>
+                <li><strong>藍線 (正常響度):</strong> 代表正常聽力者達到目標 Phon 所需的 SPL。</li>
+                <li><strong>紅虛線 (聽損閾值):</strong> 根據輸入的 dB HL 計算出的聽損者能剛好聽見的最小 SPL (0 Phon)。</li>
+                <li><strong>綠線 (增益量):</strong> 顯示助聽器在各頻率上提供的 dB 放大增益量（請參考右側 Y 軸）。</li>
+                <li><strong>黃虛線 (補償後響度):</strong> 顯示經過助聽器增益補償後，聽損者達到目標 Phon 所需的 SPL。</li>
+                <li><strong>觀察重點:</strong> 助聽器成功時，黃虛線會<strong>接近或重疊</strong>藍線，代表響度還原成功。</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="loudness_simulation.js"></script>
+</body>
+</html>
