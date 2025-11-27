@@ -169,3 +169,28 @@ p {
     background: #c0392b;
     cursor: pointer;
 }
+
+/* style.css (新增片段) */
+
+.aid-controls {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8f5e9; /* 淺綠色背景 */
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px dashed #4caf50;
+}
+
+.aid-controls label {
+    font-weight: bold;
+    color: #4caf50;
+    margin-right: 15px;
+}
+
+#aidToggle {
+    width: 20px;
+    height: 20px;
+}
