@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound-Science-Simulations: 室內聲學光線追蹤與殘響時間 (RT60) 模擬</title>
+    <link rel="stylesheet" href="reverb.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 室內聲學與殘響時間 (RT60) 模擬</h1>
+        <p>此模擬展示聲音在不同空間中的傳播、反射與衰減，理解殘響如何影響語音清晰度。</p>
+
+        <div class="controls-grid">
+            
+            <div class="room-parameters-panel">
+                <h2>房間尺寸與材質參數 (RT60 計算)</h2>
+                
+                <div class="control-group">
+                    <label for="roomLength">房間長度 (米):</label>
+                    <input type="number" id="roomLength" value="5" min="1" step="0.5">
+                </div>
+                <div class="control-group">
+                    <label for="roomWidth">房間寬度 (米):</label>
+                    <input type="number" id="roomWidth" value="4" min="1" step="0.5">
+                </div>
+                
+                <div class="control-group">
+                    <label for="materialSelect">牆面材質 (吸音量):</label>
+                    <select id="materialSelect">
+                        <option value="hard">硬質 (低吸音, 長殘響)</option>
+                        <option value="medium" selected>中等 (中等吸音, 中殘響)</option>
+                        <option value="soft">軟裝 (高吸音, 短殘響)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="animation-control-panel">
+                <h2>動態模擬控制</h2>
+
+                <div class="control-group action-buttons">
+                    <button id="singlePulseBtn">🚀 發射單一聲脈衝</button>
+                    <button id="continuousPulseBtn">🔄 模擬連續說話</button>
+                </div>
+
+                <div class="control-group">
+                    <label for="timeScaleSlider">動畫速度 / 時間倍率: <span id="currentTimeScale">1.0x</span></label>
+                    <input type="range" id="timeScaleSlider" min="0.1" max="5.0" value="1.0" step="0.1">
+                    <p class="hint"><strong>當前模擬時間: <span id="simulationTime">0.00</span> 秒</strong></p>
+                </div>
+                
+                <div class="control-group rt60-display">
+                    <label>當前計算殘響時間 (RT60):</label>
+                    <div id="rt60Value" class="rt60-value">?.?? 秒</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="reverbCanvas"></canvas>
+            <p class="hint-canvas">點擊畫布以放置聲源與聽者 (麥克風)。</p>
+        </div>
+
+        <div class="explanation">
+            <h3>圖表說明與殘響概念</h3>
+            <ul>
+                <li><strong>RT60:</strong> 聲音衰減 60 dB 所需的時間，數字越大語音越模糊。</li>
+                <li><strong>聲脈衝 (動畫):</strong> 聲源發出的音波會以光線形式在房間中傳播，碰到牆面會反射。</li>
+                <li><strong>衰減:</strong> 每次反射後，音波強度（顏色）會依據牆面<strong>吸音係數</strong>衰減。</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="reverb.js"></script>
+</body>
+</html>
