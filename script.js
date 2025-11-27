@@ -46,6 +46,7 @@ const loudnessSlider = document.getElementById('loudnessSlider');
 const currentPhonSpan = document.getElementById('currentPhon');
 const hlSliders = document.querySelectorAll('.hlSlider');
 const aidToggle = document.getElementById('aidToggle'); 
+const gainAdjustSliders = document.querySelectorAll('.gainSlider'); // *** [新增] 增益微調滑塊 ***
 
 let myChart;
 
@@ -125,17 +126,14 @@ function getHearingThresholdData() {
 }
 
 
-// *** [優化] 助聽器增益 (Gain) 計算：目標是讓補償曲線接近正常響度曲線 ***
-// 這裡我們仍然使用 50% 法則，但增益是針對 HL 點計算的
+// *** [更新] 助聽器增益 (Gain) 計算：使用微調滑塊的值 ***
 function getHearingAidGainData() {
     const gainDataPoints = [];
     
-    hlSliders.forEach(slider => {
+    gainAdjustSliders.forEach(slider => { // *** 使用增益微調滑塊 ***
         const freq = parseInt(slider.dataset.freq);
-        const dbHL = parseInt(slider.value);
-        
-        // 增益 (Gain) = 聽力損失 (dB HL) * 0.5
-        const gain = dbHL * 0.5;
+        // 直接讀取滑塊值作為增益
+        const gain = parseFloat(slider.value);
         
         gainDataPoints.push({ x: freq, y: gain });
     });
@@ -150,7 +148,7 @@ function getHearingAidGainData() {
 }
 
 
-// *** [新增] 計算補償後的目標響度曲線 ***
+// 計算補償後的目標響度曲線
 function getCompensatedLoudnessData(currentPhon) {
     const originalLoudnessData = getInterpolatedCurveData(currentPhon);
     const gainData = getHearingAidGainData(); 
@@ -164,41 +162,35 @@ function getCompensatedLoudnessData(currentPhon) {
         const freq = point.x;
         let gain = 0;
         
-        // 僅對 HL 滑塊定義的頻率點進行準確增益計算
+        // 獲取當前頻率的增益，透過插值處理非 HL 點
+        const knownFrequencies = Array.from(gainMap.keys()).sort((a, b) => a - b);
+            
         if (gainMap.has(freq)) {
             gain = gainMap.get(freq);
+        } else if (freq < knownFrequencies[0]) {
+            gain = gainMap.get(knownFrequencies[0]);
+        } else if (freq > knownFrequencies[knownFrequencies.length - 1]) {
+            gain = gainMap.get(knownFrequencies[knownFrequencies.length - 1]);
         } else {
-             // 對於其他頻率 (如 20, 50, 200, 8000 Hz)，我們需要插值增益
-            const knownFrequencies = Array.from(gainMap.keys()).sort((a, b) => a - b);
+            let lower = knownFrequencies[0];
+            let upper = knownFrequencies[knownFrequencies.length - 1];
             
-            if (freq < knownFrequencies[0]) {
-                gain = gainMap.get(knownFrequencies[0]); // 使用最低頻率的增益
-            } else if (freq > knownFrequencies[knownFrequencies.length - 1]) {
-                gain = gainMap.get(knownFrequencies[knownFrequencies.length - 1]); // 使用最高頻率的增益
-            } else {
-                // 找到最近的兩個已知頻率進行線性插值
-                let lower = knownFrequencies[0];
-                let upper = knownFrequencies[knownFrequencies.length - 1];
-                
-                for (const kFreq of knownFrequencies) {
-                    if (kFreq <= freq) {
-                        lower = kFreq;
-                    } else {
-                        upper = kFreq;
-                        break;
-                    }
-                }
-
-                if (lower !== upper) {
-                    gain = interpolate(freq, lower, gainMap.get(lower), upper, gainMap.get(upper));
+            for (const kFreq of knownFrequencies) {
+                if (kFreq <= freq) {
+                    lower = kFreq;
                 } else {
-                    gain = gainMap.get(lower);
+                    upper = kFreq;
+                    break;
                 }
+            }
+            if (lower !== upper) {
+                gain = interpolate(freq, lower, gainMap.get(lower), upper, gainMap.get(upper));
+            } else {
+                gain = gainMap.get(lower);
             }
         }
         
         // SPL_comp = SPL_original - Gain
-        // 這表示要達到相同的響度，所需輸入 SPL 可以減少 Gain
         const compensatedSPL = point.y - gain;
 
         compensatedData.push({ x: freq, y: compensatedSPL });
@@ -208,12 +200,40 @@ function getCompensatedLoudnessData(currentPhon) {
 }
 
 
+// *** [新增] 根據 HL 點自動設定增益微調滑塊的初始值 ***
+function setInitialGainValues() {
+    hlSliders.forEach(hlSlider => {
+        const freq = hlSlider.dataset.freq;
+        const dbHL = parseInt(hlSlider.value);
+        // 50% 法則計算基礎增益
+        const initialGain = (dbHL * 0.5).toFixed(1); 
+        
+        const gainSlider = document.getElementById(`gain${freq}`);
+        const gainValSpan = document.getElementById(`gain${freq}Val`);
+        
+        if (gainSlider) {
+            // 設定滑塊的值和顯示
+            gainSlider.value = initialGain;
+            gainValSpan.textContent = initialGain;
+
+            // 調整滑塊的 min/max 範圍，以基礎增益為中心進行微調
+            const center = parseFloat(initialGain);
+            gainSlider.min = Math.max(0, center - 30); // 最小不低於 0 dB
+            gainSlider.max = Math.min(60, center + 30); // 最大不超過 60 dB
+        }
+    });
+}
+
+
 // 初始化圖表
 function initChart(initialPhon) {
+    // 初始化增益滑塊的值 (必須在圖表初始化前執行)
+    setInitialGainValues();
+
     const loudnessData = getInterpolatedCurveData(initialPhon);
     const thresholdData = getHearingThresholdData();
     const gainData = getHearingAidGainData(); 
-    const compensatedData = getCompensatedLoudnessData(initialPhon); // *** [新增] 補償曲線數據 ***
+    const compensatedData = getCompensatedLoudnessData(initialPhon);
 
     myChart = new Chart(ctx, {
         type: 'line',
@@ -242,7 +262,6 @@ function initChart(initialPhon) {
                     pointStyle: 'circle',
                     yAxisID: 'y' 
                 },
-                // *** [新增] 補償後響度曲線 (黃色虛線) ***
                 {
                     label: `補償後響度: ${initialPhon} Phon`,
                     data: compensatedData,
@@ -255,9 +274,8 @@ function initChart(initialPhon) {
                     hidden: !aidToggle.checked,
                     yAxisID: 'y' 
                 },
-                // 助聽器增益量曲線 (綠線)
                 {
-                    label: `助聽器增益量 (50%法則)`,
+                    label: `助聽器增益量 (手動調整)`,
                     data: gainData,
                     borderColor: '#4caf50', 
                     borderWidth: 2,
@@ -342,20 +360,21 @@ function updateChart() {
     myChart.data.datasets[0].data = loudnessData;
     myChart.data.datasets[0].label = `響度: ${currentPhon} Phon (正常耳)`;
 
-    // 2. 更新聽損閾值數據
+    // 2. 更新聽損閾值數據 (HL)
     const thresholdData = getHearingThresholdData();
     myChart.data.datasets[1].data = thresholdData;
     
-    // 3. 更新補償後的響度曲線
+    // 3. 更新補償後的響度曲線 (黃線)
     const compensatedData = getCompensatedLoudnessData(currentPhon);
     myChart.data.datasets[2].data = compensatedData;
     myChart.data.datasets[2].label = `補償後響度: ${currentPhon} Phon`;
     myChart.data.datasets[2].hidden = !aidToggle.checked;
     
-    // 4. 更新增益曲線
+    // 4. 更新增益曲線 (綠線)
     const gainData = getHearingAidGainData();
     myChart.data.datasets[3].data = gainData;
     myChart.data.datasets[3].hidden = !aidToggle.checked;
+    myChart.data.datasets[3].label = `助聽器增益量 (手動調整)`; // 更新標籤以反映手動調整
 
     myChart.update();
 }
@@ -365,23 +384,39 @@ hlSliders.forEach(slider => {
     slider.addEventListener('input', () => {
         const freq = slider.dataset.freq;
         document.getElementById(`hl${freq}Val`).textContent = slider.value;
+        
+        // 當 HL 改變時，自動重新計算並設定初始增益滑塊的值
+        setInitialGainValues(); 
+        
         updateChart();
     });
 });
 
-// 事件監聽器 (響度滑塊)
-loudnessSlider.addEventListener('input', updateChart);
+// *** [新增] 監聽所有增益微調滑塊變動 ***
+gainAdjustSliders.forEach(slider => {
+    slider.addEventListener('input', () => {
+        const freq = slider.dataset.freq;
+        // 顯示微調後的精確值
+        document.getElementById(`gain${freq}Val`).textContent = parseFloat(slider.value).toFixed(1);
+        updateChart();
+    });
+});
 
-// 監聽助聽器開關變動
+
+// 事件監聽器 (響度滑塊和助聽器開關)
+loudnessSlider.addEventListener('input', updateChart);
 aidToggle.addEventListener('change', updateChart);
 
 // 首次加載頁面時初始化圖表
 document.addEventListener('DOMContentLoaded', () => {
-    // 初始化 HL 滑塊的數值顯示
+    // 1. 初始化 HL 滑塊的數值顯示
     hlSliders.forEach(slider => {
          const freq = slider.dataset.freq;
          document.getElementById(`hl${freq}Val`).textContent = slider.value;
     });
-
+    
+    // 2. 初始化增益滑塊的數值顯示（必須在 initChart 之前）
+    setInitialGainValues();
+    
     initChart(parseInt(loudnessSlider.value));
 });
