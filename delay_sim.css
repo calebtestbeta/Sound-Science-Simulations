@@ -1,0 +1,199 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    color: #2c3e50;
+    font-size: 2.2em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.controls-grid {
+    display: flex;
+    justify-content: space-between;
+    margin: 30px 0;
+    gap: 30px;
+}
+
+.control-panel, .time-display-panel {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+}
+
+.time-display-panel {
+    flex: 1.2;
+}
+
+h2 {
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.control-group {
+    margin-bottom: 25px;
+    padding: 10px;
+    border: 1px dashed #bdc3c7;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.control-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.hint {
+    font-size: 0.9em;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+input[type="number"], input[type="range"] {
+    width: 90%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1.1em;
+}
+
+input[type="number"] {
+    width: 100px;
+}
+
+
+/* 時間顯示區塊樣式 */
+.time-group {
+    margin: 15px 0;
+}
+
+.time-group h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+}
+
+.time-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.primary-time {
+    color: #e67e22; /* 橙色，代表 S1 */
+}
+
+.secondary-time {
+    color: #3498db; /* 藍色，代表 S2 */
+}
+
+.delay-result-box {
+    margin-top: 25px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.compensated {
+    background-color: #e8f8f5; 
+    border: 2px solid #16a085; /* 綠色邊框 */
+}
+
+.uncompensated {
+    background-color: #fcebeb; 
+    border: 2px solid #e74c3c; /* 紅色邊框 */
+}
+
+.delay-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #16a085;
+}
+
+.uncompensated .delay-value {
+    color: #e74c3c;
+}
+
+.result-hint {
+    margin: 5px 0 0;
+    font-size: 0.95em;
+}
+
+/* 模式切換按鈕 */
+.mode-control {
+    margin-bottom: 20px;
+}
+#modeToggleBtn {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.toggle-on {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.toggle-off {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* 新增 SPL 差異顯示樣式 */
+.spl-diff-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f7f3e8; /* 淺黃色背景 */
+    border: 2px solid #f39c12; /* 黃色邊框 (會被JS覆蓋) */
+}
+
+.spl-diff-box .delay-value {
+    color: #f39c12;
+    font-size: 2em;
+}
+
+/* 畫布區域 */
+.canvas-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#delayCanvas {
+    border: 2px solid #2c3e50;
+    cursor: crosshair;
+    background-color: #ecf0f1;
+}
+
+.canvas-caption {
+    font-style: italic;
+    color: #555;
+    margin-top: 10px;
+}
