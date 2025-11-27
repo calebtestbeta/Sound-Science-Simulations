@@ -176,7 +176,6 @@ class Ray {
 }
 
 // --- 4. RT60 計算 ---
-// ... (RT60 計算函數不變)
 
 function calculateRT60() {
     const L = parseFloat(roomLengthInput.value);
@@ -235,9 +234,10 @@ function drawRoom() {
 
 /**
  * 創建一組新的聲音射線 (聲脈衝)
+ * *** 修正點 1：移除 activeRays = [];，讓舊聲線持續存在直到衰減。 ***
  */
 function emitPulse(intensity = 1.0) {
-    activeRays = []; 
+    // activeRays = []; // 移除此行
     
     for (let i = 0; i < NUM_RAYS; i++) {
         const angle = (i / NUM_RAYS) * (Math.PI * 2);
@@ -269,6 +269,9 @@ function animate(timestamp) {
         width: parseFloat(roomWidthInput.value) 
     };
     
+    // 過濾掉所有已停止的聲線 (優化性能)
+    activeRays = activeRays.filter(ray => ray.active);
+
     let allRaysInactive = true;
     for (const ray of activeRays) {
         ray.update(simulatedDeltaTime, roomDimensions);
@@ -278,12 +281,12 @@ function animate(timestamp) {
         }
     }
 
-    // *** 修正點 1：提高連續發射頻率 ***
+    // *** 修正點 2：提高連續發射頻率 (0.25 秒) ***
     if (isContinuous && simulationTime % 0.25 < simulatedDeltaTime) { 
         emitPulse(0.5); 
     }
     
-    if (!isContinuous && allRaysInactive && activeRays.length > 0) {
+    if (!isContinuous && activeRays.length === 0 && allRaysInactive) {
         stopAnimation();
         return;
     }
@@ -315,6 +318,7 @@ singlePulseBtn.addEventListener('click', () => {
     isContinuous = false;
     stopAnimation();
     simulationTime = 0;
+    activeRays = []; // 單一脈衝模式下，每次發射前清空舊聲線
     emitPulse(1.0); 
     startAnimation();
 });
@@ -328,7 +332,8 @@ continuousPulseBtn.addEventListener('click', () => {
         continuousPulseBtn.textContent = '⏸ 停止說話模擬';
         stopAnimation();
         simulationTime = 0;
-        // *** 修正點 2：提高初始脈衝強度 ***
+        // *** 修正點 3：提高初始脈衝強度 (1.0) ***
+        // 注意：不主動清空 activeRays，讓聲線在連續模式下累積。
         emitPulse(1.0); 
         startAnimation();
     }
@@ -350,6 +355,7 @@ canvas.addEventListener('click', (event) => {
     if (animationFrameId !== null && !isContinuous) {
          stopAnimation();
          simulationTime = 0;
+         activeRays = [];
          emitPulse(1.0);
          startAnimation();
     }
