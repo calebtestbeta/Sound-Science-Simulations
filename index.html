@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>人耳等響度曲線模擬 (ISO 226:2003)</title>
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
 </head>
@@ -17,7 +18,29 @@
             <label for="loudnessSlider">目標響度 (Phon): <span id="currentPhon">60</span></label>
             <input type="range" id="loudnessSlider" min="20" max="90" value="60" step="5">
         </div>
-
+        
+        <div class="hearing-controls">
+            <h2>模擬聽力損失 (輸入 dB HL)</h2>
+            <p>請設定您在不同頻率的聽力閾值 (Hearing Threshold) dB HL：</p>
+            <div class="frequency-inputs">
+                <div class="input-group">
+                    <label for="hl500">500 Hz: <span id="hl500Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl500" data-freq="500" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl1000">1000 Hz: <span id="hl1000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl1000" data-freq="1000" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl2000">2000 Hz: <span id="hl2000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl2000" data-freq="2000" min="0" max="100" value="20" step="5">
+                </div>
+                <div class="input-group">
+                    <label for="hl4000">4000 Hz: <span id="hl4000Val">20</span> dB HL</label>
+                    <input type="range" class="hlSlider" id="hl4000" data-freq="4000" min="0" max="100" value="20" step="5">
+                </div>
+            </div>
+        </div>
         <div class="chart-container">
             <canvas id="equalLoudnessChart"></canvas>
         </div>
@@ -27,7 +50,8 @@
             <ul>
                 <li>**X 軸 (頻率 Hz):** 顯示聲音的頻率，使用對數刻度，從低音到高音。</li>
                 <li>**Y 軸 (聲壓 dB SPL):** 顯示客觀的聲音強度，即聲壓級。</li>
-                <li>**曲線:** 每條曲線代表一個特定的**響度等級 (Phon)**。曲線上所有點的聲音，人耳聽起來都一樣響。</li>
+                <li>**藍線 (響度曲線):** 每條曲線代表一個特定的**響度等級 (Phon)**。曲線上的所有點，人耳聽起來都一樣響。</li>
+                <li>**紅線 (閾值線):** 模擬聽損者能剛好聽到的最小聲壓級 (即 0 Phon)。</li>
                 <li>**觀察重點:** 在低 Phon 值 (小聲) 時，曲線在低頻和高頻處會明顯上揚，表示人耳在小聲時對這些頻率的敏感度較低，需要更大的聲壓才能聽見。</li>
             </ul>
         </div>
