@@ -158,16 +158,31 @@ input[type="range"] {
     pointer-events: none; /* 確保不影響圖表互動 */
 }
 
-/* 新增 SNR 顯示樣式 */
+/* ... (mic.css 檔案其他部分保持不變) ... */
+
+/* 新增 SNR 顯示樣式 (更新此區塊) */
 .snr-display {
     text-align: center;
     background-color: #e8f8f5; /* 淺綠色背景 */
     border: 2px solid #16a085; /* 深綠色邊框 */
+    padding: 10px 15px; /* 確保內邊距充足 */
+    box-sizing: border-box; /* 確保 padding 不會增加總寬度 */
+    width: 100%; /* 明確設定寬度 */
+}
+
+.snr-display .hint {
+    font-size: 0.9em; 
+    margin: 5px 0 0;
+    line-height: 1.4; 
+    
+    /* *** 修正溢出問題的關鍵 CSS 屬性：強制文字換行 *** */
+    word-break: break-word; /* 適用於所有瀏覽器 */
+    overflow-wrap: break-word; /* 現代瀏覽器標準 */
 }
 
 .snr-value {
     font-size: 2.5em;
     font-weight: bold;
-    color: #16a085; /* 突出顯示的顏色 */
+    color: #16a085;
     margin: 5px 0 10px;
 }

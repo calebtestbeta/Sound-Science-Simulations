@@ -49,10 +49,11 @@
                 
                 <div class="control-group snr-display">
                     <label>目標語音增強 (SNR 改善):</label>
-                    <div id="snrImprovementValue" class="snr-value">+0.0 dB</div>
-                    <p class="hint">此數值為麥克風在 $0^\circ$ 目標語音處相對於噪音源角度的相對增益差。</p>
+                    <div id="snrImprovementValue" class="snr-value">+3.9 dB</div> 
+                    <p class="hint">此數值代表麥克風能將<strong>前方目標語音</strong>相對於<strong>噪音源</strong>的音量<strong>放大/凸顯多少</strong>，數值越大，降噪效果越好。</p>
                 </div>
-                </div>
+
+            </div>
 
         </div>
 
@@ -63,9 +64,14 @@
         <div class="explanation">
             <h3>圖表說明：極座標圖 (Polar Plot)</h3>
             <ul>
-                <li><strong>角度 (θ):</strong> 圓周代表聲音的入射方向， $0^\circ$ 為麥克風**正前方**。</li>
-                <li><strong>距離 (dB):</strong> 從圓心到曲線的距離，代表麥克風在該角度的相對**收音增益**（通常是相對於 $0^\circ$ 的衰減量）。</li>
-                <li><strong>觀察重點:</strong> 曲線離圓心**越近**，代表該角度聲音被**抑制**得越多。</li>
+                <li><strong>角度 (θ):</strong> 圓周代表聲音的入射方向。<strong>麥克風的收音頭指向 $0^\circ$</strong>，即為<strong>正前方</strong>。</li>
+                <li><strong>距離 (dB):</strong> 從圓心到曲線邊緣的距離，代表麥克風在該角度的<strong>收音敏感度</strong>（或增益）。</li>
+                <li><strong>觀察重點:</strong> 
+                    <ul>
+                        <li>曲線離圓心<strong>越遠</strong>（靠近外圍），表示麥克風在該角度的<strong>收音越強</strong>。</li>
+                        <li>曲線離圓心<strong>越近</strong>，表示麥克風在該角度的聲音會被<strong>抑制越多</strong>（降噪效果越好）。</li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
