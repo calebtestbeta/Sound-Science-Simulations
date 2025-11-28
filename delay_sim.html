@@ -1,91 +1,48 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>演唱會音響延遲補償模擬</title>
-    <link rel="stylesheet" href="delay_sim.css">
-</head>
-<body>
-    <div class="container">
-        <h1>🎙️ 演唱會音響延遲補償模擬</h1>
-        <p>模擬大型場地中，主喇叭 (S1) 和延遲喇叭 (S2) 之間的延遲時間與聲音強度同步問題。點擊畫布移動「聆聽點」。</p>
+<div class="container">
+    
+    <h1>🎵 演唱會聲音同步模擬</h1>
+    <p>模擬在大型場地中，如何確保**主喇叭**和**遠處的延遲喇叭**的聲音能**同時**、**音量一致**地到達您的耳朵。點擊畫布來選擇您的「聆聽位置」。</p>
 
-        <div class="controls-grid">
+    <div class="controls-grid">
+        
+        <div class="parameter-adjustment">
+            <h2>參數設定</h2>
+
+            <div class="control-group">
+                <label for="speedSlider">空氣中聲速 (m/s): <span id="currentSpeed">343</span> m/s</label>
+                </div>
+
+            <div class="control-group">
+                <label for="s1AngleSlider">主喇叭 S1 指向角度: <span id="currentS1Angle">0</span>°</label>
+                <p class="hint">喇叭的橙色扇形代表聲音覆蓋範圍。</p> 
+            </div>
             
-            <div class="control-panel">
-                <h2>喇叭與場地設定</h2>
-                
-                <div class="control-group">
-                    <label>主喇叭 (S1) 位置: <span id="s1PosDisplay">X: 10m, Y: 50m</span></label>
-                    <label>延遲喇叭 (S2) 位置: <span id="s2PosDisplay">X: 60m, Y: 50m</span></label>
-                    <p class="hint">預設 S1/S2 之間距離 50m。</p>
-                </div>
-
-                <div class="control-group">
-                    <label for="s1AngleInput">S1 指向角度 (0°-359°): <span id="currentS1Angle">0</span>°</label>
-                    <input type="range" id="s1AngleInput" min="0" max="359" value="0" step="1">
-                    <p class="hint">0° 為正前方 (X軸正向)。S1 的橙色扇形表示覆蓋範圍。</p>
-                </div>
-                
-                <div class="control-group">
-                    <label for="s2AngleInput">S2 指向角度 (0°-359°): <span id="currentS2Angle">0</span>°</label>
-                    <input type="range" id="s2AngleInput" min="0" max="359" value="0" step="1">
-                    <p class="hint">0° 為正前方 (X軸正向)。S2 的藍色扇形表示覆蓋範圍。</p>
-                </div>
-                
-                <div class="control-group">
-                    <label for="speedOfSoundInput">聲速 (m/s): <span id="currentSpeed">343</span> m/s</label>
-                    <input type="number" id="speedOfSoundInput" min="300" max="360" value="343" step="1">
-                    <p class="hint">聲速隨溫度濕度變化，影響計算結果。</p>
-                </div>
-
-                <div class="control-group">
-                    <label>聆聽點 (L) 位置: <span id="listenerPosDisplay">X: 80m, Y: 50m</span></label>
-                </div>
+            <div class="control-group">
+                <label for="s2AngleSlider">延遲喇叭 S2 指向角度: <span id="currentS2Angle">0</span>°</label>
+                <p class="hint">喇叭的藍色扇形代表聲音覆蓋範圍。</p>
+            </div>
+        </div>
+        
+        <div class="result-display">
+            <h2>計算結果</h2>
+            
+            <div class="result-group">
+                <label>延遲補償時間 (<span id="compTimeUnit">ms</span>):</label>
+                <div id="delayCompensationValue" class="value-display">0.0 ms</div>
+                <p class="hint">喇叭需要**延遲**這麼多時間，才能讓聲音與主喇叭同步，達到最佳聽感。</p>
             </div>
 
-            <div class="time-display-panel">
-                <h2>延遲與同步結果</h2>
-
-                <div class="mode-control">
-                    <button id="modeToggleBtn" class="toggle-on">自動計算並補償延遲</button>
-                    <p class="hint">切換模式，觀察補償前/後的差異。</p>
-                </div>
-
-                <div class="time-group">
-                    <h3>S1 (主喇叭) 到 L</h3>
-                    <div id="t1TimeDisplay" class="time-value primary-time">0 ms</div>
-                </div>
-
-                <div class="time-group">
-                    <h3>S2 (延遲喇叭) 到 L</h3>
-                    <div id="t2TimeDisplay" class="time-value secondary-time">0 ms</div>
-                </div>
-                
-                <div class="delay-result-box compensated" id="delayResultBox">
-                    <h4>所需延遲補償量 (&Delta;t)</h4>
-                    <div id="compensationValue" class="delay-value">+0.0 ms</div>
-                    <p class="result-hint" id="resultHint">S2 必須延遲此時間才能與 S1 的聲音同步。</p>
-                </div>
-
-                <div class="delay-result-box spl-diff-box">
-                    <h4>S1/S2 聲音強度差異 (相對 SPL)</h4>
-                    <div id="splDifference" class="delay-value">0.0 dB</div>
-                    <p class="result-hint">正值代表 S1 比 S2 大聲。若差異接近 0 dB，則會發生梳狀濾波效應。</p>
-                </div>
-
+            <div class="result-group">
+                <label>音量差異 S1 vs S2 (dB):</label>
+                <div id="splDifferenceValue" class="value-display">0.0 dB</div>
+                <p class="hint">這顯示兩組喇叭的聲音大小差異。如果差異太小且聲音到達不同步，您會聽到**含糊不清的回音**。</p>
             </div>
-
-        </div>
-
-        <div class="canvas-container">
-            <canvas id="delayCanvas" width="600" height="400"></canvas>
-            <p class="canvas-caption">頂視圖：橙色 (S1) 和藍色 (S2) 扇形為涵蓋範圍，虛線為 S2 到 L 點路徑。</p>
-        </div>
-
+            
+            </div>
+    </div>
+    
+    <div class="canvas-container">
+        <p class="canvas-caption">頂視圖：橙色 (S1) 和藍色 (S2) 扇形為涵蓋範圍，虛線為 S2 到 L 點路徑。</p>
     </div>
 
-    <script src="delay_sim.js"></script>
-</body>
-</html>
+</div>

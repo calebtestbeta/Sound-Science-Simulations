@@ -12,8 +12,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎤 麥克風指向性模擬 (Microphone Directivity)</h1>
-        <p>此模擬展示不同麥克風類型如何接收來自不同角度的聲音，這是助聽器降噪的關鍵原理。</p>
+        <h1>🎤 麥克風降噪與收音模擬</h1>
+        <p>探索不同麥克風類型（例如助聽器）如何選擇性地接收<strong>來自前方的聲音</strong>，同時<strong>抑制背景噪音</strong>。</p>
 
         <div class="controls-grid">
             
@@ -38,19 +38,18 @@
                 <div class="control-group">
                     <label for="freqSlider">聲音頻率 (Hz): <span id="currentFreq">1000</span> Hz</label>
                     <input type="range" id="freqSlider" min="250" max="8000" value="1000" step="50">
-                    <p class="hint">高頻通常指向性更強 (圖形更尖銳)。</p>
+                    <p class="hint">高頻的聲音通常指向性更強 (圖形會更尖銳)。</p>
                 </div>
                 
                 <div class="control-group">
                     <label for="noiseAngleInput">背景噪音角度 (0° 正前方): <span id="currentNoiseAngle">180</span>°</label>
                     <input type="range" id="noiseAngleInput" min="0" max="359" value="180" step="1">
-                    <p class="hint">紅點代表噪音源位置，曲線在紅點處越接近圓心，抑制效果越好。</p>
+                    <p class="hint">紅點是噪音來源。曲線越往圓心縮（紅色標記處），代表對這個角度的噪音<strong>隔絕效果越好</strong>。</p>
                 </div>
                 
                 <div class="control-group snr-display">
                     <label>目標語音增強 (SNR 改善):</label>
-                    <div id="snrImprovementValue" class="snr-value">+3.9 dB</div> 
-                    <p class="hint">此數值代表麥克風能將<strong>前方目標語音</strong>相對於<strong>噪音源</strong>的音量<strong>放大/凸顯多少</strong>，數值越大，降噪效果越好。</p>
+                    <div id="snrImprovementValue" class="snr-value">+3.9 dB</div> <p class="hint">這個數值代表麥克風能把<strong>目標聲音</strong>（例如人說話）比<strong>背景噪音</strong>放大多少。數值越高，您聽到的聲音就越清晰。</p>
                 </div>
 
             </div>
@@ -62,14 +61,14 @@
         </div>
 
         <div class="explanation">
-            <h3>圖表說明：極座標圖 (Polar Plot)</h3>
+            <h3>圖表說明：收音範圍圖</h3>
             <ul>
-                <li><strong>角度 (θ):</strong> 圓周代表聲音的入射方向。<strong>麥克風的收音頭指向 $0^\circ$</strong>，即為<strong>正前方</strong>。</li>
-                <li><strong>距離 (dB):</strong> 從圓心到曲線邊緣的距離，代表麥克風在該角度的<strong>收音敏感度</strong>（或增益）。</li>
+                <li><strong>角度 (θ):</strong> 圓周代表聲音從哪個方向傳來。 $0^\circ$ 是麥克風的正前方。</li>
+                <li><strong>距離 (dB):</strong> 曲線離圓心越遠，表示麥克風對該方向的聲音<strong>收得越清楚</strong>。</li>
                 <li><strong>觀察重點:</strong> 
                     <ul>
-                        <li>曲線離圓心<strong>越遠</strong>（靠近外圍），表示麥克風在該角度的<strong>收音越強</strong>。</li>
-                        <li>曲線離圓心<strong>越近</strong>，表示麥克風在該角度的聲音會被<strong>抑制越多</strong>（降噪效果越好）。</li>
+                        <li>曲線離圓心**越遠**（靠近外圍），表示麥克風對該角度的**收音越強**。</li>
+                        <li>曲線離圓心**越近**，表示麥克風對該角度的噪音會被**抑制越多**（降噪效果越好）。</li>
                     </ul>
                 </li>
             </ul>
